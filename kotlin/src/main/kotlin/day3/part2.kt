@@ -15,44 +15,43 @@ sealed class Entry {
 fun main () {
     val input = InputUtil.getInput(DAY, SAMPLE)
     println (input)
+    val muls = mutableListOf<Pair<Int, Entry>> ()
 
     // Find the mul instructions
 
-    val muls = mutableListOf<Pair<Int, Entry>> ()
-    val matcher = pattern.matcher(input)
+    fun process (pattern: String, input: String, func: (Int, String) -> Unit) {
+        val matcher = Pattern.compile (pattern).matcher (input)
+        while (matcher.find ()) {
+            val start = matcher.start()
+            val end = matcher.end()
+            func (start, input.substring(start, end))
+        }
+        return
+    }
 
-    while (matcher.find()) {
-        val start = matcher.start()
-        val end = matcher.end()
-        val m2 = subpattern.matcher (input.substring(start, end))
+    process ("mul\\([0-9]{1,3},[0-9]{1,3}\\)", input) { i, str ->
+        val m2 = subpattern.matcher (str)
         if (m2.matches ()) {
             val l = m2.group (1).toInt ()
             val r = m2.group (2).toInt ()
-            muls.add (start to Entry.Mul(l * r))
+            muls.add (i to Entry.Mul(l * r))
         }
     }
 
     // Find the do and don't instructions
 
-    val doPattern = Pattern.compile ("do\\(\\)").matcher (input)
-    while (doPattern.find ()) {
-        val start = doPattern.start ()
-        muls.add (start to Entry.Do())
+    process ("do\\(\\)", input) { i, str ->
+        muls.add (i to Entry.Do())
     }
 
-    val dontPattern = Pattern.compile ("don't\\(\\)").matcher (input)
-    while (dontPattern.find ()) {
-        val start = dontPattern.start ()
-        muls.add (start to Entry.Dont())
+    process ("don't\\(\\)", input) { i, str ->
+        muls.add (i to Entry.Dont ())
     }
 
-    // Sort them
+    // Sort them in order of appearance
 
     muls.sortWith { a, b ->
         a.first - b.first
-    }
-    muls.forEach {
-        println (it)
     }
 
     // Then evaluate the value
@@ -60,12 +59,12 @@ fun main () {
     var total = 0
     var enabled = true
 
-    muls.forEach { mul ->
-        when (mul.second) {
+    muls.map { it.second }.forEach {
+        when (it) {
             is Entry.Do -> enabled = true
             is Entry.Dont -> enabled = false
             is Entry.Mul -> if (enabled) {
-                total += (mul.second as Entry.Mul).value
+                total += it.value
             }
         }
     }
