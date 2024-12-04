@@ -57,6 +57,15 @@ data class Grid (
         }
     }
 
+    fun visit (func: (Int, Int, Char) -> Unit) {
+        for (col in 0 until cols) {
+            for (row in 0 until rows) {
+                func (row, col, charAt (row, col))
+            }
+        }
+        return
+    }
+
     fun charAt (row: Int, col: Int): Char {
         return chars[col + row * cols]
     }
