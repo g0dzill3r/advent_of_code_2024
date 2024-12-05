@@ -6,19 +6,14 @@ val DAY = 4;
 
 fun main () {
     val input = InputUtil.getInput(DAY, SAMPLE)
-    println(input);
     val grid = Grid.parse (input.trim ())
-    println ("rows=${grid.rows} cols=${grid.cols}")
-    println (grid)
     grid.dump ()
 
     var total = 0
-    for (row in 0 ..< grid.rows) {
-        for (col in 0 ..< grid.cols) {
-            for (dir in Direction.entries) {
-                if (grid.check (row, col, dir, "XMAS")) {
-                    total ++
-                }
+    grid.visit { row, col, value ->
+        for (dir in Direction.entries) {
+            if (grid.check (row, col, dir, "XMAS")) {
+                total ++
             }
         }
     }
