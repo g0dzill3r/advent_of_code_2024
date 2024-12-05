@@ -15,4 +15,9 @@ object InputUtil {
     fun getPath (path: String): URL = classLoader.getResource (path)
 }
 
+fun <T> withInput (day: Int, sample: Boolean, func: (String) -> T?): T? {
+    val input = InputUtil.getInput(day, sample)
+    return func (input)
+}
+
 // EOF
