@@ -78,23 +78,6 @@ data class Lab (
         return
     }
 
-    private fun findGuard (): Point {
-        var found: Point? = null
-        visit { point, thing ->
-            if (thing == Thing.GUARD) {
-                if (found != null) {
-                    throw Exception("Two guards!?")
-                }
-                found = point
-            }
-        }
-        return if (found == null) {
-            throw Exception("Guard not found.")
-        } else {
-            found !!
-        }
-    }
-
     companion object {
         val OUTSIDE = Point(-1, -1)
 
