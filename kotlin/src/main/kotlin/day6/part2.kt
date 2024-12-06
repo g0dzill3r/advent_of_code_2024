@@ -5,11 +5,13 @@ import util.withInput
 fun main () {
     withInput (DAY, SAMPLE) { input ->
         val lab = Lab.parse (input)
+        lab.patrol ()
+
         var loops = 0
-        lab.visit { row, col, thing ->
-            if (thing == Thing.EMPTY) {
+        lab.visit { point, thing ->
+            if (thing == Thing.VISITED) {
                 val copy = Lab.parse (input)
-                copy.update (row, col, Thing.OBSTRUCTION)
+                copy.obstruct (point)
                 try {
                     copy.patrol ()
                 } catch (e: Exception) {

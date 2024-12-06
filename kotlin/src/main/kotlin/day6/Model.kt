@@ -66,10 +66,13 @@ data class Lab (
         data[toIndex (point)] = thing
     }
 
-    fun visit (func: (Int, Int, Thing) -> Unit) {
+    fun markVisited (point: Point) = update (point, Thing.VISITED)
+    fun obstruct (point: Point) = update (point, Thing.OBSTRUCTION)
+
+    fun visit (func: (Point, Thing) -> Unit) {
         for (row in 0 until rows) {
             for (col in 0 until cols) {
-                func (row, col, thingAt (row, col))
+                func (Point (row, col), thingAt (row, col))
             }
         }
         return
@@ -77,12 +80,12 @@ data class Lab (
 
     private fun findGuard (): Point {
         var found: Point? = null
-        visit { row, col, thing ->
+        visit { point, thing ->
             if (thing == Thing.GUARD) {
                 if (found != null) {
                     throw Exception("Two guards!?")
                 }
-                found = Point (row, col)
+                found = point
             }
         }
         return if (found == null) {
@@ -90,10 +93,6 @@ data class Lab (
         } else {
             found !!
         }
-    }
-
-    fun markVisited (point: Point) {
-        data[point.row * cols + point.col] = Thing.VISITED
     }
 
     companion object {
@@ -151,9 +150,9 @@ data class Lab (
 
     override fun toString(): String {
         return buildString {
-            visit { row, col, thing ->
+            visit { point, thing ->
                 print (thing.symbol)
-                if (col == cols - 1 && row != rows - 1) {
+                if (point.col == cols - 1 && point.row != rows - 1) {
                     println ()
                 }
             }
