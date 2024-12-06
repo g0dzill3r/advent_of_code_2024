@@ -3,28 +3,24 @@ package day6
 import util.ListUtil
 
 enum class Direction (val deltaRow: Int, val deltaCol: Int) {
-//    NW (-1, -1),
     N (-1, 0),
-//    NE (1, -1),
     E (0, 1),
-//    SE (1, 1),
     S (1, 0),
-//    SW (1, -1),
     W (0, -1);
 
     fun turn (): Direction {
         return when (this) {
-            Direction.N -> Direction.E
-            Direction.E -> Direction.S
-            Direction.S -> Direction.W
-            Direction.W -> Direction.N
+            N -> E
+            E -> S
+            S -> W
+            W -> N
         }
     }
 }
 
 enum class Thing (val symbol: Char) {
     EMPTY ('.'),
-    THING ('#'),
+    OBSTRUCTION ('#'),
     GUARD ('^'),
     VISITED ('X');
 
@@ -117,7 +113,7 @@ data class Lab (
     }
 
     private fun isObstructed (point: Point): Boolean {
-        return thingAt (point) == Thing.THING
+        return thingAt (point) == Thing.OBSTRUCTION
     }
 
     fun step (): Pair<Point, Direction>? {
@@ -151,7 +147,6 @@ data class Lab (
                 seen.add (blocked)
             }
         }
-        return
     }
 
     override fun toString(): String {
