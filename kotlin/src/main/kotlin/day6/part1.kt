@@ -3,7 +3,7 @@ package day6
 import util.withInput
 
 val DAY = 6
-val SAMPLE = true
+val SAMPLE = false
 
 fun main () {
     withInput (DAY, SAMPLE) { input ->

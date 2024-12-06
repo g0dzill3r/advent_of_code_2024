@@ -63,6 +63,9 @@ data class Lab (
     fun thingAt (row: Int, col: Int): Thing = data[toIndex (row, col)]
     fun thingAt (point: Point): Thing = data[toIndex (point)]
 
+    fun update (row: Int, col: Int, thing: Thing) {
+        data[toIndex (row, col)] = thing
+    }
     fun update (point: Point, thing: Thing) {
         data[toIndex (point)] = thing
     }
