@@ -48,31 +48,24 @@ data class Lab (
     val visitCount: Int
         get () = data.filter { it == Thing.VISITED }.size
 
-    fun isValid (row: Int, col: Int): Boolean {
-        return row in 0 until rows && col in 0 until cols
-    }
-    fun isValid (point: Point): Boolean = isValid (point.row, point.col)
+    private fun isValid (point: Point): Boolean = point.row in 0 until rows && point.col in 0 until cols
 
-    private fun toIndex (row: Int, col: Int): Int = row * cols + col
-    private fun toIndex (point: Point): Int = toIndex (point.row, point.col)
+    private fun toIndex (point: Point): Int = point.row * cols + point.col
 
-    fun thingAt (row: Int, col: Int): Thing = data[toIndex (row, col)]
     fun thingAt (point: Point): Thing = data[toIndex (point)]
 
-    fun update (row: Int, col: Int, thing: Thing) {
-        data[toIndex (row, col)] = thing
-    }
     fun update (point: Point, thing: Thing) {
         data[toIndex (point)] = thing
     }
 
-    fun markVisited (point: Point) = update (point, Thing.VISITED)
+    private fun markVisited (point: Point) = update (point, Thing.VISITED)
     fun obstruct (point: Point) = update (point, Thing.OBSTRUCTION)
 
     fun visit (func: (Point, Thing) -> Unit) {
         for (row in 0 until rows) {
             for (col in 0 until cols) {
-                func (Point (row, col), thingAt (row, col))
+                val point = Point(row, col)
+                func (point, thingAt (point))
             }
         }
         return
