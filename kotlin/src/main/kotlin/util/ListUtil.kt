@@ -24,6 +24,16 @@ object ListUtil {
             }
         }
     }
+
+    fun <T> join (lists: List<List<T>>): List<T> {
+        return buildList {
+            lists.forEach {
+                it.forEach {
+                    add (it)
+                }
+            }
+        }
+    }
 }
 
 fun main () {
