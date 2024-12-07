@@ -17,6 +17,17 @@ data class Equations (
     }
 }
 
+enum class Op (val symbol: String, val code: Char) {
+    ADD ("+", '0'),
+    MULTIPLY ("*", '1'),
+    CATENATE ("||", '2');
+
+    companion object {
+        private val codeMap = entries.associateBy { it.code }
+        fun fromCode (code: Char): Op = codeMap[code] as Op
+    }
+}
+
 data class Equation (
     val output: BigInteger,
     val inputs: List<BigInteger>
@@ -28,9 +39,10 @@ data class Equation (
             var result = inputs[0]
             for (i in ops.indices) {
                 val op = ops[i]
-                when (op) {
-                    '0' -> result += inputs[i + 1]
-                    '1' -> result *= inputs[i + 1]
+                when (Op.fromCode (op)) {
+                    Op.ADD -> result += inputs[i + 1]
+                    Op.MULTIPLY -> result *= inputs[i + 1]
+                    else -> Unit
                 }
             }
             if (result == output) {
@@ -47,10 +59,10 @@ data class Equation (
             var result = inputs[0]
             for (i in ops.indices) {
                 val op = ops[i]
-                when (op) {
-                    '0' -> result += inputs[i + 1]
-                    '1' -> result *= inputs[i + 1]
-                    '2' -> result = "${result}${inputs[i+1]}".toBigInteger()
+                when (Op.fromCode (op)) {
+                    Op.ADD -> result += inputs[i + 1]
+                    Op.MULTIPLY -> result *= inputs[i + 1]
+                    Op.CATENATE -> result = "${result}${inputs[i+1]}".toBigInteger()
                 }
             }
             if (result == output) {
@@ -58,6 +70,62 @@ data class Equation (
             }
         }
         return false
+    }
+
+    fun isPossibleWithCount(): List<Pair <List<BigInteger>, List<Char>>> {
+        val options = BinaryUtil.toBinarySeq(inputs.size - 1).toList ()
+        val save = mutableListOf<Pair <List<BigInteger>, List<Char>>> ()
+        options.forEach {
+            val ops = it.toList()
+            var result = inputs[0]
+            for (i in ops.indices) {
+                val op = ops[i]
+                when (Op.fromCode (op)) {
+                    Op.ADD -> result += inputs[i + 1]
+                    Op.MULTIPLY -> result *= inputs[i + 1]
+                    else -> Unit
+                }
+            }
+            if (result == output) {
+                save.add (inputs to ops)
+            }
+        }
+        return save
+    }
+
+    fun isPossible2WithCount(): List<Pair <List<BigInteger>, List<Char>>> {
+        val options = BinaryUtil.toBinarySeq(inputs.size - 1).toList ()
+        val save = mutableListOf<Pair <List<BigInteger>, List<Char>>> ()
+        options.forEach {
+            val ops = it.toList()
+            var result = inputs[0]
+            for (i in ops.indices) {
+                val op = ops[i]
+                when (Op.fromCode (op)) {
+                    Op.ADD -> result += inputs[i + 1]
+                    Op.MULTIPLY -> result *= inputs[i + 1]
+                    Op.CATENATE -> result = "${result}${inputs[i+1]}".toBigInteger()
+                }
+            }
+            if (result == output) {
+                save.add (inputs to ops)
+            }
+        }
+        return save
+    }
+
+    fun formatted (els: List<BigInteger>, ops: List<Char>): String {
+        val iter = ops.iterator()
+        return buildString {
+            append (output)
+            append (" = ")
+            els.forEach {
+                append(it)
+                if (iter.hasNext()) {
+                    append(" ${Op.fromCode(iter.next()).symbol} ")
+                }
+            }
+        }
     }
 
     override fun toString (): String {
