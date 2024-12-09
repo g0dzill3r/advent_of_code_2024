@@ -91,9 +91,9 @@ data class Model (val input: String) {
                 if (move.len < e1.len) {
                     entries.add (free + 1, Entry.Free(e1.len - move.len))
                 }
-                blocks = toBlocks (entries)
             }
         }
+        blocks = toBlocks (entries)
         return
     }
 
