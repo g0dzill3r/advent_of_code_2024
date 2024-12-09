@@ -4,8 +4,8 @@ import util.withInput
 
 fun main () {
     withInput(DAY, SAMPLE) { input ->
-        val grid = Grid.parse(input)
-        val antinodes = grid.getAntinodes2()
+        val grid = Grid2 (input)
+        val antinodes = grid.getAntinodes ()
         println (antinodes.size)
     }
 }

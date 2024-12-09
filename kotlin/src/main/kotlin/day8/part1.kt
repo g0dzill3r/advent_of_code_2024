@@ -7,7 +7,7 @@ val SAMPLE = false
 
 fun main () {
     withInput(DAY, SAMPLE) { input ->
-        val grid = Grid.parse(input)
+        val grid = Grid (input)
         val antinodes = grid.getAntinodes()
         println (antinodes.size)
     }
@@ -15,4 +15,5 @@ fun main () {
 }
 
 // EOF
+
 
