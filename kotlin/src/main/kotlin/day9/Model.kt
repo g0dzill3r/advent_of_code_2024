@@ -1,6 +1,7 @@
 package day9
 
 import java.math.BigInteger
+import kotlin.properties.Delegates
 
 sealed class Entry (val len: Int) {
     class File (len: Int, val id: Int): Entry (len) {
@@ -15,7 +16,19 @@ data class Block (val id: Int = -1)
 
 data class Model (val input: String) {
     val entries = toEntries (input)
+
     var blocks = toBlocks (entries)
+
+//    var blocks = toBlocks (entries)
+//        set (value) {
+//            field = value
+//            println (encoded)
+//        }
+
+//    var blocks: MutableList<Block> by Delegates.observable(toBlocks (entries)) {
+//        prop, old, new ->
+//            println (encoded)
+//    }
 
     val encoded: String
         get () {
@@ -92,8 +105,8 @@ data class Model (val input: String) {
                     entries.add (free + 1, Entry.Free(e1.len - move.len))
                 }
             }
+            blocks = toBlocks (entries)
         }
-        blocks = toBlocks (entries)
         return
     }
 

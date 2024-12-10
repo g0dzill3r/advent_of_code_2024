@@ -4,7 +4,7 @@ import util.withInput
 
 
 val DAY = 9
-val SAMPLE = false
+val SAMPLE = true
 
 fun main () {
     println ("day$DAY, part1")
