@@ -1,7 +1,5 @@
 package day10
 
-import java.util.Collections.addAll
-
 data class Point (val row: Int, val col: Int) {
     fun move (dir: Direction): Point {
         return Point (row + dir.deltaRow, col + dir.deltaCol)
@@ -86,9 +84,7 @@ data class Grid (val input: String) {
             valueAt (it) == height + 1
         }
         neighbors.forEach {
-            if (! path.contains (it)) {
-                getHikes(it, mutableListOf<Point>().apply { addAll(path) }, complete)
-            }
+            getHikes(it, mutableListOf<Point>().apply { addAll(path) }, complete)
         }
 
         return complete

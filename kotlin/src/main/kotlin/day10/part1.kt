@@ -18,7 +18,7 @@ fun main () {
 
         var total = 0
         hikes.forEachIndexed { i, hike ->
-            val terminals = hike.map { it[it.size - 1] }.toSet ()
+            val terminals = hike.map { it.last () }.toSet ()
             total += terminals.size
         }
         println (total)

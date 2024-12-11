@@ -4,7 +4,7 @@ import util.withInput
 
 
 fun main () {
-    println("day$DAY, part1")
+    println("day$DAY, part2")
     withInput(DAY, SAMPLE) { input ->
         val grid = Grid(input)
         val trailheads = grid.trailheads
