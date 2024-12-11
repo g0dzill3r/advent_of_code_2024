@@ -10,10 +10,8 @@ val SAMPLE = false
 fun main () {
     println("day$DAY, part1")
     withInput(DAY, SAMPLE) { input ->
-        val model = Model (input)
-        println ("START: ${model.stones}")
+        val model = ModelOne (input)
         for (i in 1 .. 25) {
-            println (i)
             model.tick ()
         }
         println (model.stones.size)
