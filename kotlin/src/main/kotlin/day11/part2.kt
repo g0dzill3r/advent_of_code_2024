@@ -1,12 +1,13 @@
 package day11
 
+import util.repeat
 import util.withInput
 
 fun main () {
     println("day$DAY, part2")
     withInput(DAY, SAMPLE) { input ->
         val model = ModelTwo (input)
-gi        for (i in 1 .. 75) {
+        75.repeat {
             model.tick ()
         }
         println (model.stoneCount)
