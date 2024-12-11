@@ -6,8 +6,9 @@ import java.math.BigInteger
  * The data model used to solve part1.
  */
 
-abstract class BaseModel () {
+abstract class BaseModel<T> () {
     abstract fun tick ()
+    abstract val stoneCount: T
 
     companion object {
         val MULTIPLIER = 2024.toBigInteger ()

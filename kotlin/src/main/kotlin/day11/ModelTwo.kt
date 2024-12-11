@@ -8,7 +8,7 @@ import java.math.BigInteger
  * The data model used to solve part1.
  */
 
-data class ModelTwo (val input: String) : BaseModel () {
+data class ModelTwo (val input: String) : BaseModel<BigInteger> () {
     var stones = mutableMapOf<BigInteger, BigInteger>().apply {
         input.split (" ").forEach {
             increment (it.toBigInteger ())
@@ -35,7 +35,7 @@ data class ModelTwo (val input: String) : BaseModel () {
         }
     }
 
-    val stoneCount: BigInteger
+    override val stoneCount: BigInteger
         get () {
             var total = BigInteger.ZERO
             stones.forEach { (value, count) ->

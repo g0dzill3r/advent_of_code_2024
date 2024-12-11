@@ -2,7 +2,7 @@ package day11
 
 import java.math.BigInteger
 
-class ModelOne (input: String): BaseModel () {
+class ModelOne (input: String): BaseModel<Int> () {
     var stones = buildList {
         input.split (" ").forEach {
             add (it.toBigInteger())
@@ -26,7 +26,7 @@ class ModelOne (input: String): BaseModel () {
         }
     }
 
-    val stoneCount: Int = stones.size
+    override val stoneCount: Int = stones.size
     override fun toString (): String = stones.toString ()
 }
 
