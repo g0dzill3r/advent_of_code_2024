@@ -40,7 +40,7 @@ data class Gardens (val input: String) {
     }
 
     fun dump () {
-        visit { (x, y), plant ->
+        visit { (x, _), plant ->
             print (plant)
             if (x == cols - 1) {
                 println ()
@@ -149,7 +149,7 @@ data class Gardens (val input: String) {
         val sides: Int
             get() {
                 var total = 0
-                for ((point, list) in corners) {
+                for ((_, list) in corners) {
                     total += list.size
                 }
                 return total
@@ -171,12 +171,11 @@ data class Gardens (val input: String) {
     }
 
     companion object {
-        private val CORNERS = listOf (
-            listOf (Direction.N, Direction.E),
-            listOf (Direction.E, Direction.S),
-            listOf (Direction.S, Direction.W),
-            listOf (Direction.W, Direction.N)
-        )
+        private val CORNERS = buildList {
+            Direction.entries.forEach { dir ->
+                add (listOf (dir, dir.turn ()))
+            }
+        }
     }
 }
 
@@ -185,6 +184,13 @@ enum class Direction (val dx: Int, val dy: Int){
     E (1, 0),
     S (0, 1),
     W (-1, 0);
+
+    fun turn (): Direction = when (this) {
+        N -> E
+        E -> S
+        S -> W
+        W -> N
+    }
 }
 
 
