@@ -5,7 +5,13 @@ import util.withInput
 fun main () {
     println("day$DAY, part2")
     withInput(DAY, SAMPLE) { input ->
-        println(input)
+        val gardens = Gardens (input)
+        var total = 0
+        val regions = gardens.getRegions ()
+        regions.forEach {
+            total += it.bulkPrice
+        }
+        println (total)
     }
     return
 }
