@@ -1,5 +1,7 @@
 package week2.day12
 
+import util.repeat
+
 data class Point (val x: Int, val y: Int) {
     override fun toString (): String = "($x, $y)"
     fun move (dir: Direction) = Point (x + dir.dx, y + dir.dy)
@@ -185,11 +187,17 @@ enum class Direction (val dx: Int, val dy: Int){
     S (0, 1),
     W (-1, 0);
 
-    fun turn (): Direction = when (this) {
-        N -> E
-        E -> S
-        S -> W
-        W -> N
+    fun turn (count: Int = 1): Direction {
+        var dir = this
+        count.repeat {
+            dir = when (this) {
+                N -> E
+                E -> S
+                S -> W
+                W -> N
+            }
+        }
+        return dir
     }
 }
 
