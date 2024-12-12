@@ -1,7 +1,5 @@
 package week2.day11
 
-import java.math.BigInteger
-
 class ModelOne (input: String): BaseModel<Int>() {
     var stones = buildList {
         input.split (" ").forEach {

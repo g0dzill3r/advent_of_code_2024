@@ -3,7 +3,6 @@ package week2.day11
 import util.increment
 import java.math.BigInteger
 
-
 /**
  * The data model used to solve part1.
  */
@@ -28,13 +27,7 @@ data class ModelTwo (val input: String) : BaseModel<BigInteger>() {
     }
 
     override val stoneCount: BigInteger
-        get () {
-            var total = BigInteger.ZERO
-            stones.forEach { (value, count) ->
-                total += count
-            }
-            return total
-        }
+        get () = stones.values.sumOf { it }
 
     override fun toString (): String = stones.toString ()
 }
