@@ -170,6 +170,67 @@ data class Gardens (val input: String) {
             }
             return
         }
+
+        /**
+         *
+         */
+
+        fun countCorners (): Int {
+            var corners = 0
+
+            fun plantAt (point: Point): Char {
+                return if (point in plots) {
+                    this@Gardens.plantAt(point)
+                } else {
+                    '.'
+                }
+            }
+
+            fun corners (point: Point, match: (Char) -> Boolean): Int {
+                var corners = 0
+                val (a, b, c, d) = Direction.entries.map { match (plantAt (point.move (it))) }
+                if (a && b) corners ++
+                if (b && c) corners ++
+                if (c && d) corners ++
+                if (d && a) corners ++
+                return corners
+            }
+
+            fun isCheckerboard (point: Point): Boolean {
+                val match = listOf (
+                    point,
+                    point.move (Direction.E),
+                    point.move (Direction.S),
+                    point.move (Direction.S).move (Direction.E)
+                ).map {
+                    plantAt (it) == plant && plots.contains (it)
+                }
+                return match == listOf (true, false, false, true) || match == listOf (false, true, true, false)
+            }
+
+            visit { point, other ->
+
+                // Check for convex corners
+
+                if (plant == other && plots.contains (point)) {
+                    corners += corners (point) { it != plant }
+                }
+
+                // Otherwise check for concave corners
+
+                else if (plant != other) {
+                    corners += corners (point) { it == plant }
+                }
+
+                // Deal with the overlapping cases as well
+
+                if (isCheckerboard (point)) {
+                    corners -= 2
+                }
+            }
+
+            return corners
+        }
     }
 
     companion object {
