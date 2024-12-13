@@ -187,13 +187,13 @@ data class Gardens (val input: String) {
             }
 
             fun corners (point: Point, match: (Char) -> Boolean): Int {
-                var corners = 0
+                var count = 0
                 val (a, b, c, d) = Direction.entries.map { match (plantAt (point.move (it))) }
-                if (a && b) corners ++
-                if (b && c) corners ++
-                if (c && d) corners ++
-                if (d && a) corners ++
-                return corners
+                if (a && b) count ++
+                if (b && c) count ++
+                if (c && d) count ++
+                if (d && a) count ++
+                return count
             }
 
             fun isCheckerboard (point: Point): Boolean {

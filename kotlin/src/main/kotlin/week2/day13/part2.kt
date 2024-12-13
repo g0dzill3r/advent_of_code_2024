@@ -2,10 +2,16 @@ package week2.day13
 
 import util.withInput
 
+val prizeOffset = 10_000_000_000_000
+
 fun main () {
-    println("day${week2.day12.DAY}, part2")
-    withInput(week2.day12.DAY, week2.day12.SAMPLE) { input ->
+    println("day${DAY}, part2")
+    withInput(DAY, SAMPLE) { input ->
         println(input)
+
+        val l: Long = prizeOffset
+        println(l)
+
     }
     return
 }
