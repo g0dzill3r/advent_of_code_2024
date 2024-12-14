@@ -1,5 +1,6 @@
 package week2.day14
 
+import util.increment
 import java.util.regex.Pattern
 
 data class Vec2 (var x: Int, var y: Int) {
@@ -54,6 +55,38 @@ data class Model (val robots: List<Robot>) {
         return
     }
 
+    fun getGrid (dim: Vec2): Map<Vec2, Int> {
+        val counts = mutableMapOf<Vec2, Int> ()
+        robots.forEach { robot ->
+            counts.increment (robot.pos)
+        }
+        return counts
+    }
+
+    fun dump (dim: Vec2) {
+        val counts = getGrid (dim)
+        for (y in 0 until dim.y) {
+            for (x in 0 until dim.x) {
+                val vec = Vec2 (x, y)
+                val count = counts [vec]
+                if (count == null) {
+                    print ("...")
+                } else {
+                    print (String.format ("%3d", count))
+                }
+                if (x == dim.x - 1) {
+                    println ()
+                }
+            }
+        }
+
+    }
+
+    fun isTreeLike (dim: Vec2): Boolean {
+        val grid = getGrid (dim)
+        return grid.values.all { it == 1 }
+    }
+
     companion object {
         fun parse (input: String): Model {
             return Model (buildList {
@@ -62,6 +95,20 @@ data class Model (val robots: List<Robot>) {
                 }
             })
         }
+    }
+}
+
+fun fold (x: Int, y: Int): Int {
+    return if (x < (y + 1) / 2) {
+        x
+    } else {
+        y - x - 1
+    }
+}
+
+fun main () {
+    for (x in 0 until 11) {
+        println ("$x: ${fold (x, 11)}")
     }
 }
 
