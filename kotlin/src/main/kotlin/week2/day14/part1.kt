@@ -11,8 +11,11 @@ fun main () {
     println("day$DAY, part1")
     withInput(DAY, SAMPLE) { input ->
         val model = Model.parse(input)
-//        val clip = Vec2 (11, 7)
-        val clip = Vec2 (101, 103)
+        val clip = if (SAMPLE) {
+            Vec2(11, 7)
+        } else {
+            Vec2(101, 103)
+        }
 
         100.repeat {
             model.tick (clip)

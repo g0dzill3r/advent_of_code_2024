@@ -5,6 +5,9 @@ import kotlin.math.max
 
 open class Coordinates (val x: Long, val y: Long) {
     override fun toString(): String = "X=$x, Y=$y"
+    fun offset (offset: Long): Coordinates {
+        return Coordinates (x + offset, y + offset)
+    }
 }
 class DeltaCoordinates (x: Long, y: Long) : Coordinates (x, y) {
     override fun toString(): String = "X+$x, Y+$y"
@@ -12,14 +15,19 @@ class DeltaCoordinates (x: Long, y: Long) : Coordinates (x, y) {
 
 
 
-data class Machine (val a: DeltaCoordinates, val b: DeltaCoordinates, val prize: Coordinates) {
-    data class Possibility (val a: Long, val b: Long, val cost: Long)
+data class Machine (val a: DeltaCoordinates, val b: DeltaCoordinates, var prize: Coordinates) {
+    data class Possibility (val a: Long, val b: Long, var cost: Long)
 
     val A_COST = 3
     val B_COST = 1
 
     fun cost (a: Long, b: Long): Long {
         return a * A_COST + b * B_COST
+    }
+
+    fun offset (offset: Long) {
+        prize = prize.offset (offset)
+        return
     }
 
     fun possibilities (): List<Possibility> {
@@ -74,8 +82,8 @@ data class Machine (val a: DeltaCoordinates, val b: DeltaCoordinates, val prize:
     }
 }
 
-class Arcade (val input: String) {
-    val machines = parse (input)
+class Arcade (val input: String, val offset: Long = 0L) {
+    val machines = parse (input, offset)
 
     override fun toString (): String {
         return buildString {
@@ -87,12 +95,14 @@ class Arcade (val input: String) {
     }
 
     companion object {
-        fun parse (input: String): List<Machine> {
+        fun parse (input: String, offset: Long): List<Machine> {
             val iter = input.split ("\n").filter { it.isNotEmpty() }.iterator ()
             return buildList {
                 while (iter.hasNext()) {
                     val str = iter.next() + " " + iter.next() + " " + iter.next()
-                    add (Machine.parse (str))
+                    val machine = Machine.parse (str)
+                    machine.offset (offset)
+                    add (machine)
                 }
             }
         }
