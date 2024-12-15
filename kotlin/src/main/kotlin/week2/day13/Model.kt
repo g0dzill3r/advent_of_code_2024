@@ -21,6 +21,8 @@ data class Machine (val a: DeltaCoordinates, val b: DeltaCoordinates, var prize:
     val A_COST = 3
     val B_COST = 1
 
+    fun cost (coord: Coordinates): Long = cost (coord.x, coord.y)
+
     fun cost (a: Long, b: Long): Long {
         return a * A_COST + b * B_COST
     }
