@@ -77,11 +77,23 @@ data class Grid (val rows: Int, val cols: Int, val data: MutableList<Thing>) {
             Direction.UP, Direction.DOWN -> {
                 try {
                     val maybe = robot.add (dir)
-                    findMoves (maybe, dir).reversed ().forEach {
-                        val thing = thingAt (it)
-                        update (it.add (dir), thing)
-                        update (it, Thing.EMPTY)
+                    val moves = findMoves (maybe, dir)
+                    val updates = buildMap {
+                        moves.forEach {
+                            put(it, Thing.EMPTY)
+                        }
+                        moves.forEach {
+                            put(it.add (dir), thingAt (it))
+                        }
                     }
+                    updates.forEach { (point, thing) ->
+                        update (point, thing)
+                    }
+//                    findMoves (maybe, dir).reversed ().forEach {
+//                        val thing = thingAt (it)
+//                        update (it.add (dir), thing)
+//                        update (it, Thing.EMPTY)
+//                    }
                     robot = maybe
                 } catch (e: BlockedException) {
                     // IGNORED
