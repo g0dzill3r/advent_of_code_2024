@@ -49,7 +49,7 @@ data class Maze (
         }
     }
 
-    fun dump () {
+    fun dump (visited: Map<Pair<Point, Direction>, Boolean>? = null) {
         visit { point, el ->
             if (point.col == 0) {
                 print (String.format ("%2d: ", point.row))
@@ -57,7 +57,18 @@ data class Maze (
             when {
                 point == start -> print (Element.START.render)
                 point == end -> print (Element.END.render)
-                else -> print (elementAt (point).render)
+                else -> {
+                    if (visited != null && el != Element.WALL) {
+                        val count = visited.filter { it.key.first == point }.count ()
+                        if (count > 0) {
+                            print ('0' + count)
+                        } else {
+                            print(elementAt(point).render)
+                        }
+                    } else {
+                        print(elementAt(point).render)
+                    }
+                }
             }
             if (point.col == cols - 1) {
                 println ()
@@ -97,14 +108,39 @@ data class Maze (
             rec.right
         )
         for (next in possible) {
-            if (elementAt (next.point) == Element.EMPTY) {
-                if (next.point !in rec.path.map { it.first }) {
-                    walk (next, end, pathMap)
+            if (elementAt (next.point) == Element.EMPTY) {                // next point must be empty
+                if (next.point !in rec.path.map { it.first }) {           // and we haven't already visited it
+                    if (! pathMap.isVisited (next.point, next.dir)) {
+                        walk (next, end, pathMap)
+                    }
                 }
             }
         }
 
+        pathMap.visit (rec.point, rec.dir)
         return
+    }
+
+    data class Node (
+        val position: Pair<Point, Direction>
+    ) {
+        var cost: Int = 0
+        val connections: MutableList<Node> = mutableListOf()
+    }
+
+    fun asGraph (start: Point, dir: Direction = Direction.EAST): Node {
+        val nodes = mutableMapOf<Pair<Point, Direction>, Node> ()
+        fun visit (point: Point, dir: Direction) {
+            if (nodes [start to dir] == null) {
+//                val node = Node (start)
+//                fun traverse (point: Point
+//                options.forEach {
+//
+//                }
+            }
+        }
+        visit (start, dir)
+        return nodes[start to dir] as Node
     }
 
     companion object {
@@ -162,9 +198,16 @@ data class PathMap (
     val start: Point,
     val end: Point,
 ) {
-    val map: MutableMap<Pair<Point, Direction>, Int> = mutableMapOf ()
+    val visited: MutableMap<Pair<Point, Direction>, Boolean> = mutableMapOf ()
     var minCost: MutableMap<Point, Int> = mutableMapOf ()
     val paths: MutableList<List<Pair<Point, Int>>> = mutableListOf ()
+
+    fun visit (point: Point, dir: Direction) {
+        visited [point to dir] = true
+    }
+    fun isVisited (point: Point, dir: Direction): Boolean {
+        return visited [point to dir] ?: false
+    }
 
     fun save (rec: Rec, reset: Boolean = false) {
         if (reset) {
