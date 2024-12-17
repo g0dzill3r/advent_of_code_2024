@@ -23,6 +23,10 @@ fun main () {
     return
 }
 
+/**
+ * Use Cramer's rule to solve for the intersection of two linear equations.
+ */
+
 fun solve (machine: Machine): Coordinates?{
     val a1 = machine.a.x
     val a2 = machine.a.y
@@ -38,12 +42,15 @@ fun solve (machine: Machine): Coordinates?{
     val x = xnum / den
     val y = ynum / den
 
-    return if (x == floor (x) && y == floor (y)) {
+    return if (x.isWhole && y.isWhole) {
         Coordinates (x.toLong (), y.toLong ())
     } else {
         null
     }
 }
+
+val Double.isWhole: Boolean
+    get () = this == floor (this)
 
 // EOF
 
