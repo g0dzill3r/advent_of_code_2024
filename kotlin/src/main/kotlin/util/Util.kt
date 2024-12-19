@@ -6,3 +6,10 @@ fun Int.repeat (func: () -> Unit) {
     }
     return
 }
+
+fun Int.forEach (func: (Int) -> Unit) {
+    for (i in 0 until this) {
+        func (i)
+    }
+    return
+}

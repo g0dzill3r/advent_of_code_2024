@@ -4,21 +4,21 @@ import week3.day17.Computer
 import week3.day17.Register
 
 data class RegisterState (
-    val a: Int? = null,
-    val b: Int? = null,
-    val c: Int? = null
+    val a: Long? = null,
+    val b: Long? = null,
+    val c: Long? = null
 ) {
-    val map: MutableMap<Register, Int>
+    val map: MutableMap<Register, Long>
         get () = buildMap {
-            put (Register.A, a ?: 0)
-            put (Register.B, b ?: 0)
-            put (Register.C, c ?: 0)
+            put (Register.A, a ?: 0L)
+            put (Register.B, b ?: 0L)
+            put (Register.C, c ?: 0L)
         }.toMutableMap ()
 }
 
 data class InputState (
     val registers: RegisterState? = null,
-    val program: List<Int>
+    val program: List<Long>
 )
 
 data class OutputState (

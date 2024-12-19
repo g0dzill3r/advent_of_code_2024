@@ -11,7 +11,7 @@ abstract  class Operator (val op: String) {
      class ADV : Operator ("adv") {
         override operator fun invoke (computer: Computer, operand: Operand) {
             val num = computer.getRegister (Register.A)
-            val den = 2.pow (operand.comboValue (computer))
+            val den = 2L.pow (operand.comboValue (computer))
             computer.setRegister(Register.A, num / den)
             return
         }
@@ -45,7 +45,7 @@ abstract  class Operator (val op: String) {
 
      class JNZ : Operator ("jnz") {
         override operator fun invoke (computer: Computer, operand: Operand) {
-            if (computer.getRegister (Register.A) != 0) {
+            if (computer.getRegister (Register.A) != 0L) {
                 computer.iptr = operand.literalValue.toInt ()
             }
             return
@@ -70,7 +70,7 @@ abstract  class Operator (val op: String) {
      class OUT : Operator ("out") {
         override operator fun invoke (computer: Computer, operand: Operand) {
             val value = operand.comboValue (computer) % 8
-            computer.emit (value)
+            computer.emit (value.toInt ())
             return
         }
     }
@@ -81,7 +81,7 @@ abstract  class Operator (val op: String) {
      class BDV : Operator ("bdv") {
         override operator fun invoke (computer: Computer, operand: Operand) {
             val num = computer.getRegister (Register.A)
-            val den = 2.pow (operand.comboValue (computer))
+            val den = 2L.pow (operand.comboValue (computer))
             computer.setRegister(Register.B, num / den)
             return
         }
@@ -92,7 +92,7 @@ abstract  class Operator (val op: String) {
      class CDV : Operator ("cdv") {
         override operator fun invoke (computer: Computer, operand: Operand) {
             val num = computer.getRegister (Register.A)
-            val den = 2.pow (operand.comboValue (computer))
+            val den = 2L.pow (operand.comboValue (computer))
             computer.setRegister(Register.C, num / den)
             return
         }
@@ -101,16 +101,16 @@ abstract  class Operator (val op: String) {
     override fun toString () = op
 
     companion object {
-        fun parse (input: Int): Operator {
+        fun parse (input: Long): Operator {
             return when (input) {
-                0 -> ADV ()
-                1 -> BXL()
-                2 -> BST ()
-                3 -> JNZ ()
-                4 -> BCX ()
-                5 -> OUT ()
-                6 -> BDV ()
-                7 -> CDV ()
+                0L -> ADV ()
+                1L -> BXL()
+                2L -> BST ()
+                3L -> JNZ ()
+                4L -> BCX ()
+                5L -> OUT ()
+                6L -> BDV ()
+                7L -> CDV ()
                 else -> throw IllegalStateException ("Illegal operator: $input")
             }
         }

@@ -4,7 +4,7 @@ import util.withInput
 
 
 val DAY = 17
-val SAMPLE = true
+val SAMPLE = false
 
 fun main () {
     println("day$DAY, part1 ${if (SAMPLE) "(SAMPLE)" else "}"}")

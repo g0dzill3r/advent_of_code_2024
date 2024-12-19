@@ -5,11 +5,11 @@ import java.util.regex.Pattern
 
 
 data class Computer (
-    val registers: MutableMap<Register, Int>,
-    val program: MutableList<Int>
+    val registers: MutableMap<Register, Long>,
+    val program: MutableList<Long>
 ) {
     var iptr = 0
-    private val output = mutableListOf<Int> ()
+    val output = mutableListOf<Int> ()
 
     fun clear () {
         Register.entries.forEach {
@@ -26,14 +26,14 @@ data class Computer (
         return
     }
 
-    val fetch: Int
+    val fetch: Long
         get () = program [iptr++]
 
-    fun setRegister (register: Register, value: Int) {
+    fun setRegister (register: Register, value: Long) {
         registers [register] = value
         return
     }
-    fun getRegister (register: Register): Int = registers [register] as Int
+    fun getRegister (register: Register): Long = registers [register] as Long
 
     fun run (): List<Int> {
         while (iptr < program.size) {
@@ -106,7 +106,7 @@ data class Computer (
                     if (! matcher.matches ()) {
                         throw IOException ("Invalid input: $row")
                     }
-                    put (Register.valueOf (matcher.group (1)), matcher.group (2).toInt ())
+                    put (Register.valueOf (matcher.group (1)), matcher.group (2).toLong ())
                 }
             }.toMutableMap()
 
@@ -115,7 +115,7 @@ data class Computer (
             val i = second.indexOf (": ")
             val program = second.substring (i + 2, second.length)
                 .split (",")
-                .map { it.toInt() }
+                .map { it.toLong () }
                 .toMutableList ()
 
             return Computer (registers, program)

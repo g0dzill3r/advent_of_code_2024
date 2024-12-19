@@ -3,10 +3,7 @@ package week3.day17.debug
 import util.interactive
 import util.repeat
 import util.withInput
-import week3.day17.Computer
-import week3.day17.DAY
-import week3.day17.Register
-import week3.day17.SAMPLE
+import week3.day17.*
 import java.util.regex.Pattern
 
 fun main () {
@@ -19,7 +16,7 @@ fun main () {
             if (args.size != 2) {
                 println ("USAGE: ${args[0]} <value>")
             } else {
-                computer.setRegister (which, args[1].toInt ())
+                computer.setRegister (which, args[1].toLong ())
             }
             computer.dumpRegisters()
             return
@@ -65,9 +62,23 @@ fun main () {
                         if (args.size % 2 != 1) {
                             println ("USAGE: ${args[0]} (<op> <operand>)+")
                         } else {
-                            val codes = args.subList (1, args.size).map { it.toInt () }
+                            val codes = args.subList (1, args.size).map { it.toLong () }
                             computer.program.addAll (codes)
                             computer.dump ()
+                        }
+                    }
+                    "list" -> {
+                        if (args.size != 1) {
+                            println ("USAGE: ${args[0]}")
+                        } else {
+                            var i = 0
+                            computer.program.let {
+                                for (i in 0 until it.size step 2) {
+                                    val op = Operator.parse (it[i])
+                                    val operand = Operand.parse (it[i + 1])
+                                    println ("$i: $op $operand")
+                                }
+                            }
                         }
                     }
                     else -> println ("ERROR: Unrecognized command: ${args[0]}")
