@@ -34,6 +34,7 @@ data class Maze (
 
     val end = find (Element.END)!!
     val start = find (Element.START)!!
+    var cur: Position? = null
 
     init {
         update (start, Element.EMPTY)
@@ -49,7 +50,7 @@ data class Maze (
         }
     }
 
-    fun dump (visited: Map<Pair<Point, Direction>, Boolean>? = null) {
+    fun dump () {
         visit { point, el ->
             if (point.col == 0) {
                 print (String.format ("%2d: ", point.row))
@@ -58,15 +59,10 @@ data class Maze (
                 point == start -> print (Element.START.render)
                 point == end -> print (Element.END.render)
                 else -> {
-                    if (visited != null && el != Element.WALL) {
-                        val count = visited.filter { it.key.first == point }.count ()
-                        if (count > 0) {
-                            print ('0' + count)
-                        } else {
-                            print(elementAt(point).render)
-                        }
+                    if (point == cur?.point) {
+                        print ("C")
                     } else {
-                        print(elementAt(point).render)
+                        print (elementAt(point).render)
                     }
                 }
             }
@@ -78,69 +74,137 @@ data class Maze (
     }
 
     /**
-     * Calculate the cheapest path from (start, end).
+     * Start a set of walkers at the end of the maze in
+     * each possible direction. The last spot has a cost of 0.
      */
 
-    fun walk (start: Point, end: Point, dir: Direction): PathMap {
-        val pathMap = PathMap (start, end)
-        val initial = Rec (start, dir, 0, listOf (start to 0))
-
-        walk (initial, end, pathMap)
-
-        return pathMap
-    }
-
-    private fun walk (rec: Rec, end: Point, pathMap: PathMap) {
-
-        // If we've reached the end then we can save our path (if it is lowest-cost)
-        // and return
-
-        if (rec.point == end) {
-            pathMap.done (rec)
-            return
+    fun walk (graph: Map<Position, Node>) {
+        var walkers = buildSet {
+            Direction.entries.forEach { dir ->
+                val pos = Position (end, dir)
+                add (pos)
+                val start = graph[pos] as Node
+                start.cheapest = 0
+            }
         }
 
-        // Let's try all the possible next moves from this location
-
-        val possible = listOf (
-            rec.forward,
-            rec.left,
-            rec.right
-        )
-        for (next in possible) {
-            if (elementAt (next.point) == Element.EMPTY) {                // next point must be empty
-                if (next.point !in rec.path.map { it.first }) {           // and we haven't already visited it
-                    if (! pathMap.isVisited (next.point, next.dir)) {
-                        walk (next, end, pathMap)
+        while (walkers.isNotEmpty()) {
+            walkers = buildSet {
+                walkers.forEach {
+                    val cur = graph[it] as Node
+                    cur.edges.forEach { edge ->
+                        val next = edge.position
+                        val node = graph[next] as Node
+                        val cost = cur.cheapest!! + edge.cost
+                        if (node.cheapest == null || cost < node.cheapest!!) {
+                            node.cheapest = cost
+                            add (next)
+                        }
                     }
                 }
             }
         }
-
-        pathMap.visit (rec.point, rec.dir)
         return
     }
 
-    data class Node (
-        val position: Pair<Point, Direction>
-    ) {
-        var cost: Int = 0
-        val connections: MutableList<Node> = mutableListOf()
-    }
+    /**
+     * Calculate the shortest paths through the maze
+     */
 
-    fun asGraph (start: Point, dir: Direction = Direction.EAST): Node {
-        val nodes = mutableMapOf<Pair<Point, Direction>, Node> ()
-        fun visit (point: Point, dir: Direction) {
-            if (nodes [start to dir] == null) {
-//                val node = Node (start)
-//                fun traverse (point: Point
-//                options.forEach {
-//
-//                }
+//    fun shortest (graph: Map<Position, Node>): List<List<Point>> {
+//        data class Walker (val pos: Position, val path: MutableList<Point> = mutableListOf ())
+//        val walkers = mutableListOf (Walker (Position (start, Direction.EAST)))
+//        while (walkers.isNotEmpty ()) {
+//            walkers.forEach {
+//                val node = graph[it.pos] as Node
+//                val descents = node.edges.filter { i
+//            }
+//        }
+//    }
+
+    /**
+     * Represents a location in the maze with edges to all possible moves
+     * within the maze (turns and movement).
+     */
+
+    data class Node (
+        val position: Position,
+        val edges: MutableList<Edge> = mutableListOf (),
+        var cheapest: Int? = null,
+    ) {
+        fun hasEdge (position: Position): Boolean = getEdge (position) != null
+        fun getEdge (position: Position): Edge? {
+            return edges.find { it.position == position }
+        }
+
+        override fun toString(): String {
+            return buildString {
+                append (position.toString ())
+                append ("-")
+                append (cheapest)
+                append ("\n")
+                edges.forEach {
+                    append ("  - $it")
+                }
             }
         }
-        visit (start, dir)
-        return nodes[start to dir] as Node
+    }
+
+    /**
+     * Represents an edge from one orientation to another and includes the
+     * traversal cost.
+     */
+
+    data class Edge (
+        val position: Position,
+        val cost: Int
+    ) {
+        override fun toString (): String = "$position-$$cost"
+    }
+
+    /**
+     * Represents a position and an orientation within the maze.
+     */
+
+    data class Position (val point: Point, val dir: Direction) {
+        val left: Position
+            get () = Position (point, dir.left)
+
+        val right: Position
+            get () = Position (point, dir.right)
+
+        val forward: Position
+            get () = Position (point.add (dir), dir)
+
+        override fun toString (): String = "$point-${dir}"
+    }
+
+    /**
+     * Bulds a graph representation of the maze including all the possible
+     * orientations and the possible traversals between them.
+     */
+
+    fun buildGraph (graph: MutableMap<Position, Node> = mutableMapOf ()): MutableMap<Position, Node> {
+        visit { point, el ->
+            if (el == Element.EMPTY) {
+                Direction.entries.forEach { dir ->
+                    val position = Position (point, dir)
+                    val node = graph.getOrPut (position) {
+                        Node (position)
+                    }
+                    if (! node.hasEdge (position.left)) {
+                        node.edges.add (Edge (position.left, 1000))
+                    }
+                    if (! node.hasEdge (position.right)) {
+                        node.edges.add (Edge (position.right, 1000))
+                    }
+                    if (! node.hasEdge (position.forward) && elementAt (position.forward.point) == Element.EMPTY) {
+                        node.edges.add (Edge (position.forward, 1))
+                    }
+                }
+            }
+        }
+        return graph
     }
 
     companion object {
@@ -153,6 +217,7 @@ data class Maze (
         }
     }
 }
+
 
 data class Rec (
     val point: Point,

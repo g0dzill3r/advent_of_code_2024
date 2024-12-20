@@ -2,7 +2,7 @@ package week3.day16
 
 enum class Element (val symbol: Char, val render: Char) {
     EMPTY('.', '·'),
-    WALL('#', '█'),
+    WALL('#', '#'),
     END ('E', '◉'),
     START ('S', '◯'),
     SENTINEL ('*', '*');
