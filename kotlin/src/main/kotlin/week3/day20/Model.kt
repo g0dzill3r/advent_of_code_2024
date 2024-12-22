@@ -17,6 +17,7 @@ enum class Element (val symbol: Char) {
 data class Point (val row: Int, val col: Int) {
     override fun toString() = "($row, $col)"
     fun move (dir: Direction): Point = Point (row + dir.delta.row, col + dir.delta.col)
+    fun distance (other: Point): Int = abs(row - other.row) + abs(col - other.col)
 }
 
 enum class Direction (val symbol: Char, val delta: Point) {
@@ -165,12 +166,31 @@ data class MazeGraph (val positions: List<Point>) {
         }
     }
 
+    /**
+     * Get the list of possible cheats that would save at least the specified
+     * amount of picoseconds.
+     */
+
+    fun possibleCheats (duration: Int, minSavings: Int): List<Pair<Point, Point>> {
+        return buildList {
+            for (i in 0 until positions.size - 1) {
+                val start = positions[i]
+                for (j in i + minSavings until positions.size) {
+                    val end = positions[j]
+                    if (start.distance (end) <= duration) {
+                        add (start to end)
+                    }
+                }
+            }
+        }
+    }
+
     fun race (cheat: Pair<Point, Point>? = null): Int {
         return if (cheat != null) {
             val (p1, p2) = cheat
             val i1 = index [p1] as Int
             val i2 = index [p2] as Int
-            positions.size - abs (i1 - i2) + 1
+            positions.size - abs (i1 - i2) + p1.distance (p2) - 1
         } else {
             positions.size - 1
         }

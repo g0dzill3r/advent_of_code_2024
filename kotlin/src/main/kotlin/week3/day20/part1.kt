@@ -3,7 +3,6 @@ package week3.day20
 import util.withInput
 
 val DAY = 20
-val SAMPLE = false
 
 fun main () {
     println("day$DAY, part1 ${if (SAMPLE) "(SAMPLE)" else ""}")
