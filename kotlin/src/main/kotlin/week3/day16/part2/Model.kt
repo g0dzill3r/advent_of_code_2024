@@ -5,6 +5,9 @@ import week3.day16.Direction
 import week3.day16.Element
 import week3.day16.Point
 
+/**
+ *
+ */
 
 data class Maze (
     val rows: Int,
@@ -50,7 +53,7 @@ data class Maze (
         }
     }
 
-    fun dump () {
+    fun dump (highlight: Set<Point> = emptySet ()) {
         visit { point, el ->
             if (point.col == 0) {
                 print (String.format ("%2d: ", point.row))
@@ -60,7 +63,9 @@ data class Maze (
                 point == end -> print (Element.END.render)
                 else -> {
                     if (point == cur?.point) {
-                        print ("C")
+                        print ('C')
+                    } else if (point in highlight) {
+                        print ('O')
                     } else {
                         print (elementAt(point).render)
                     }
@@ -96,7 +101,7 @@ data class Maze (
                         val next = edge.position
                         val node = graph[next] as Node
                         val cost = cur.cheapest!! + edge.cost
-                        if (node.cheapest == null || cost < node.cheapest!!) {
+                        if (node.cheapest == null || cost < node.cheapest!! ) {
                             node.cheapest = cost
                             add (next)
                         }
@@ -104,23 +109,71 @@ data class Maze (
                 }
             }
         }
+
         return
     }
 
     /**
-     * Calculate the shortest paths through the maze
+     * Calculate the shortest paths through the maze.
      */
 
-//    fun shortest (graph: Map<Position, Node>): List<List<Point>> {
-//        data class Walker (val pos: Position, val path: MutableList<Point> = mutableListOf ())
-//        val walkers = mutableListOf (Walker (Position (start, Direction.EAST)))
-//        while (walkers.isNotEmpty ()) {
-//            walkers.forEach {
-//                val node = graph[it.pos] as Node
-//                val descents = node.edges.filter { i
-//            }
-//        }
-//    }
+    fun shortest (graph: Map<Position, Node>): List<List<Point>> {
+        data class Walker (var pos: Position, val path: MutableList<Point> = mutableListOf ())
+        val walkers = mutableListOf (Walker (Position (start, Direction.EAST)))
+        var done = false
+
+        while (! done) {
+            val additional = mutableListOf<Walker> ()
+            done = true
+
+            walkers.forEach { walker ->
+                val cur = graph[walker.pos] as Node
+
+                // Save our point on the map as part of the path
+
+                walker.path.add (walker.pos.point)
+                if (cur.cheapest == 0) {
+                    return@forEach
+                } else {
+                    done = false
+                }
+
+                // Find the cheapest of the directions we could move in
+
+                val possible = buildList {
+                    add (Position (walker.pos.point, walker.pos.dir.left))
+                    add (Position (walker.pos.point, walker.pos.dir.right))
+                    val maybe = walker.pos.point.add (walker.pos.dir.opposite)
+                    if (elementAt (maybe) != Element.WALL) {
+                        add (Position (maybe, walker.pos.dir))
+                    }
+                }.map {
+                    graph [it] as Node
+                }
+
+                // Now find just the edges that are the cheapest
+
+                val moves = possible.filter { node ->
+                    node.cheapest !! < cur.cheapest !!
+                }
+
+                // Make the cheapest move(s) and add walkers if we need to
+
+                moves.forEachIndexed { i, node ->
+                    when (i) {
+                        0 ->  walker.pos = node.position
+                        else -> {
+                            additional.add (Walker (node.position))
+                        }
+                    }
+                }
+            }
+
+            walkers.addAll (additional)
+        }
+        return walkers.map { it.path }
+    }
+
 
     /**
      * Represents a location in the maze with edges to all possible moves
@@ -144,7 +197,7 @@ data class Maze (
                 append (cheapest)
                 append ("\n")
                 edges.forEach {
-                    append ("  - $it")
+                    append ("  - $it\n")
                 }
             }
         }
@@ -157,7 +210,7 @@ data class Maze (
 
     data class Edge (
         val position: Position,
-        val cost: Int
+        var cost: Int
     ) {
         override fun toString (): String = "$position-$$cost"
     }
@@ -192,13 +245,9 @@ data class Maze (
                     val node = graph.getOrPut (position) {
                         Node (position)
                     }
-                    if (! node.hasEdge (position.left)) {
-                        node.edges.add (Edge (position.left, 1000))
-                    }
-                    if (! node.hasEdge (position.right)) {
-                        node.edges.add (Edge (position.right, 1000))
-                    }
-                    if (! node.hasEdge (position.forward) && elementAt (position.forward.point) == Element.EMPTY) {
+                    node.edges.add (Edge (position.left, 1000))
+                    node.edges.add (Edge (position.right, 1000))
+                    if (elementAt (position.forward.point) == Element.EMPTY) {
                         node.edges.add (Edge (position.forward, 1))
                     }
                 }
@@ -218,89 +267,5 @@ data class Maze (
     }
 }
 
-
-data class Rec (
-    val point: Point,
-    val dir: Direction,
-    val cost: Int = 0,
-    val path: List<Pair<Point, Int>>
-) {
-    val position: Pair<Point, Direction>
-        get () = Pair (point, dir)
-
-    fun updatePath (next: Pair<Point, Int>): List<Pair<Point, Int>> {
-        return buildList {
-            addAll (path)
-            add (next)
-        }
-    }
-
-    val forward: Rec
-        get () {
-            val next = point.add (dir)
-            val nextCost = cost + 1
-            return Rec (next, dir, nextCost, updatePath (next to nextCost))
-        }
-
-    val left: Rec
-        get () {
-            val next = point.add (dir.left)
-            val nextCost = cost + 1001
-            return Rec (next, dir.left, nextCost, updatePath (next to nextCost))
-        }
-
-    val right: Rec
-        get () {
-            val next = point.add (dir.right)
-            val nextCost = cost + 1001
-            return Rec (next, dir.right, nextCost, updatePath (next to nextCost))
-        }
-
-    override fun toString (): String = "${point}->${dir} \$$cost\n [$path]"
-}
-
-data class PathMap (
-    val start: Point,
-    val end: Point,
-) {
-    val visited: MutableMap<Pair<Point, Direction>, Boolean> = mutableMapOf ()
-    var minCost: MutableMap<Point, Int> = mutableMapOf ()
-    val paths: MutableList<List<Pair<Point, Int>>> = mutableListOf ()
-
-    fun visit (point: Point, dir: Direction) {
-        visited [point to dir] = true
-    }
-    fun isVisited (point: Point, dir: Direction): Boolean {
-        return visited [point to dir] ?: false
-    }
-
-    fun save (rec: Rec, reset: Boolean = false) {
-        if (reset) {
-            minCost.clear ()
-        }
-        rec.path.forEach { (point, cost) ->
-            minCost[point] = cost
-        }
-        return
-    }
-
-    fun done (rec: Rec) {
-        if (minCost[end] == null) {
-            save (rec)
-            paths.add (rec.path)
-        } else {
-            val min = minCost[end] as Int
-            if (rec.cost < min) {
-                save (rec, true)
-                paths.clear ()
-                paths.add (rec.path)
-            } else if (rec.cost == min) {
-                save (rec)
-                paths.add (rec.path)
-            }
-        }
-        return
-    }
-}
 
 // EOF

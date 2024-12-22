@@ -57,6 +57,16 @@ fun main () {
                         maze.cur = pos
                         maze.dump ()
                     }
+                    "s" -> {
+                        val shortest = maze.shortest (graph)
+                        val points = mutableSetOf<Point> ()
+                        shortest.forEachIndexed { i, path ->
+                            path.forEach {
+                                points.add (it)
+                            }
+                        }
+                        println (points.size)
+                    }
                     else -> println ("ERROR: Unknown command: ${args[0]}")
                 }
             }

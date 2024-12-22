@@ -29,8 +29,7 @@ data class Secret (var value: Long) {
         return secret
     }
 
-    val price: Int = (value % 10).toI
-
+    val price: Int = (value % 10).toInt ()
 
     val next: Secret
         get () {

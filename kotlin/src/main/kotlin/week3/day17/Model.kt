@@ -1,5 +1,7 @@
 package week3.day17
 
+import week3.day17.part2._binary
+import week3.day17.part2._integer
 import java.io.IOException
 import java.util.regex.Pattern
 
@@ -54,10 +56,13 @@ data class Computer (
     }
 
     fun dumpRegisters () {
-        registers.forEach { (register, value) ->
-            print ("$register=$value | ")
-        }
-        println ("iptr=$iptr")
+        val a = getRegister(Register.A)
+        val b = getRegister(Register.B)
+        val c = getRegister(Register.C)
+        println ("   A: ${a._integer} | ${a._binary}")
+        println ("   B: ${b._integer} | ${b._binary}")
+        println ("   C: ${c._integer} | ${c._binary}")
+        println ("iptr: $iptr")
         return
     }
 
@@ -122,3 +127,4 @@ data class Computer (
         }
     }
 }
+

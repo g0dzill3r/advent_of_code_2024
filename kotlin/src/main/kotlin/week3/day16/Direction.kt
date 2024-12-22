@@ -16,13 +16,11 @@ enum class Direction (val symbol: Char, val drow: Int, val dcol: Int) {
             WEST -> SOUTH
         }
 
+    val opposite: Direction
+        get () = this.left.left
+
     val right: Direction
-        get () = when (this) {
-            NORTH -> EAST
-            EAST -> SOUTH
-            SOUTH -> WEST
-            WEST -> NORTH
-        }
+        get () = this.left.left.left
 
     val delta: Point = Point (drow, dcol)
     

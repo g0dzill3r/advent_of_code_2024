@@ -7,7 +7,7 @@ import week3.day17.*
 import java.util.regex.Pattern
 
 fun main () {
-    println("day$DAY, part1 ${if (SAMPLE) "(SAMPLE)" else "}"}")
+    println("day$DAY, part1 ${if (SAMPLE) "(SAMPLE)" else ""}")
     withInput(DAY, SAMPLE) { input ->
         var computer = Computer.parse(input)
         computer.dump ()
@@ -65,6 +65,13 @@ fun main () {
                             val codes = args.subList (1, args.size).map { it.toLong () }
                             computer.program.addAll (codes)
                             computer.dump ()
+                        }
+                    }
+                    "program" -> {
+                        if (args.size % 2 != 1) {
+                            println ("USAGE: ${args[0]} (<op> <operand>)+")
+                        } else {
+                            println (computer.program)
                         }
                     }
                     "list" -> {
