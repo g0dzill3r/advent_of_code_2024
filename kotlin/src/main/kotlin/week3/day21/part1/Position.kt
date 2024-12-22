@@ -1,4 +1,6 @@
-package week3.day21
+package week3.day21.part1
+
+import week3.day21.sign
 
 /**
  *
@@ -69,13 +71,5 @@ data class Position (val row: Int, val col: Int) {
     }
 }
 
-fun main () {
-    val naive = Position.traversals (Position (3, 2), Position (3, 1), Position (0, 2))
-    naive.forEachIndexed { index, row ->
-        println ("$index: $row")
-        println (" - ${Position.toDeltas (row)}")
-        println (" - ${Position.toDirections(row)}")
-    }
-}
 
 // EOF

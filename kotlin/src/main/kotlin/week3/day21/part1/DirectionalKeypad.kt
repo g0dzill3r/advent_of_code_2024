@@ -1,4 +1,6 @@
-package week3.day21
+package week3.day21.part1
+
+import week3.day21.cli
 
 /**
  * Implements the directional keypad.
@@ -24,7 +26,7 @@ class DirectionalKeypad {
     fun press (seq: String): List<List<Direction>> {
         val els = buildList {
             seq.forEach {
-                val press = press (Button.fromSymbol (it))
+                val press = press (Button.fromSymbol(it))
                 addAll (press)
                 accum.add (press)
             }
@@ -44,8 +46,8 @@ class DirectionalKeypad {
     }
 
     fun traverse (from: Button, to: Button): List<List<Direction>> {
-        val paths = Position.traversals (from.pos, to.pos, Button.MISSING.pos)
-        return paths.map { Position.toDirections (it) }
+        val paths = Position.traversals(from.pos, to.pos, Button.MISSING.pos)
+        return paths.map { Position.toDirections(it) }
     }
 
     enum class Button (val symbol: Char, val pos: Position) {

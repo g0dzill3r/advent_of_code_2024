@@ -2,6 +2,9 @@ package week3.day21
 
 import util.interactive
 
+val DAY = 21
+val SAMPLE = true
+
 fun sign (value: Int): Int {
     return when {
         value < 0 -> -1

@@ -1,4 +1,4 @@
-package week3.day21
+package week3.day21.part1
 
 /**
  * Represents a directional button on the control keypad.

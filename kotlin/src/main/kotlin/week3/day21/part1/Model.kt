@@ -1,6 +1,4 @@
-package week3.day21
-
-
+package week3.day21.part1
 
 data class Code (val code: String) {
     override fun toString (): String = code
@@ -17,6 +15,10 @@ data class Code (val code: String) {
         fun parse (input: String) = Code (input)
         fun parseCodes (input: String): List<Code> = input.split ("\n").map { parse (it) }
     }
+}
+
+fun main () {
+
 }
 
 // EOF

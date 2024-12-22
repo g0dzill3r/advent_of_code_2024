@@ -1,10 +1,8 @@
-package week3.day21
+package week3.day21.part1
 
 import util.withInput
+import week3.day21.*
 
-
-val DAY = 21
-val SAMPLE = true
 
 fun main () {
     println("day$DAY, part1 ${if (SAMPLE) "(SAMPLE)" else ""}")

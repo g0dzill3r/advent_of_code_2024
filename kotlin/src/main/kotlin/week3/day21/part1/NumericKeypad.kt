@@ -1,6 +1,8 @@
-package week3.day21
+package week3.day21.part1
 
-import util.interactive
+import week3.day21.cli
+import week3.day21.combinations
+import week3.day21.flatten
 
 /**
  * Models the keypad with the numeric buttons.
@@ -29,7 +31,7 @@ class NumericKeypad {
     fun press (seq: String): List<List<Direction>> {
         val els = buildList {
             seq.forEach {
-                val press = press (Button.fromSymbol (it))
+                val press = press (Button.fromSymbol(it))
                 addAll (press)
                 accum.add (press)
             }
