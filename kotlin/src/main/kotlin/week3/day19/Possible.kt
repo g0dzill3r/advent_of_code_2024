@@ -1,6 +1,7 @@
 package week3.day19
 
 import util.interactive
+import util.memoized
 
 fun possible (available: List<String>, desired: String): Long {
     return available.sumOf {
@@ -15,13 +16,15 @@ fun possible (available: List<String>, desired: String): Long {
     }
 }
 
-private val cache = mutableMapOf<String, Long>()
+val possibleMemoized = ::possible.memoized ()
 
-fun possibleMemoized (available: List<String>, desired: String): Long {
-    return cache.getOrPut (desired) {
-        possible(available, desired)
-    }
-}
+//private val cache = mutableMapOf<String, Long>()
+//
+//fun possibleMemoized (available: List<String>, desired: String): Long {
+//    return cache.getOrPut (desired) {
+//        possible(available, desired)
+//    }
+//}
 
 fun main () {
     val available = listOf ("r", "wr", "b", "g", "bwu", "rb", "gbbr")
