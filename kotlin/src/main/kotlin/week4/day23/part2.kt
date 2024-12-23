@@ -2,7 +2,7 @@ package week4.day23
 
 import util.withInput
 
-val SAMPLE = false
+val SAMPLE = true
 
 fun main () {
     println("day$DAY, part2 ${if (SAMPLE) "(SAMPLE)" else ""}")

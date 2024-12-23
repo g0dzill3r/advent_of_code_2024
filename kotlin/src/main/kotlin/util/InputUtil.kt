@@ -7,7 +7,8 @@ object InputUtil {
         get() = Thread.currentThread().contextClassLoader
 
     fun getInput (day: Int, sample: Boolean): String {
-        val path = "day$day/input${if (sample) ".sample" else ""}";
+        val week = (day - 1) / 7 + 1
+        val path = "week$week/day$day/input${if (sample) ".sample" else ""}";
         val url = getPath (path);
         return url.readText(Charsets.UTF_8);
     }
