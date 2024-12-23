@@ -21,4 +21,4 @@ fun <T> withInput (day: Int, sample: Boolean, func: (String) -> T?): T? {
     return func (input)
 }
 
-// EOF
+// EOFz

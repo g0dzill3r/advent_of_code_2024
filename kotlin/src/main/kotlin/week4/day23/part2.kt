@@ -2,7 +2,7 @@ package week4.day23
 
 import util.withInput
 
-val SAMPLE = true
+val SAMPLE = false
 
 fun main () {
     println("day$DAY, part2 ${if (SAMPLE) "(SAMPLE)" else ""}")
@@ -15,7 +15,11 @@ fun main () {
             }
         }
         val already = mutableSetOf<String> ()
-        model.nodes.forEach { node ->
+        val check = buildSet {
+            addAll (model.nodes.filter { it.startsWith ("t") })
+            addAll (model.nodes.filter { model.getConnections (it).any { it.startsWith ("t") } })
+        }
+        check.forEach { node ->
             val additional = mutableSetOf<Set<String>> ()
             model.getConnections (node).forEach { other ->
                 if (other !in already) {
