@@ -23,7 +23,7 @@ sealed class Gate (
         return value
     }
 
-    override fun toString () = "${this::class.java.simpleName}(?)"
+    override fun toString () = "${this::class.java.simpleName}(${inputs.map { it.name }}) -> ${outputs.map { it.name }}"
 
     companion object {
         fun new (type: String, config: Configuration): Gate {

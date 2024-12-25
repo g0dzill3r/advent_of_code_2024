@@ -1,8 +1,56 @@
 package week4.day24
 
+import util.halt
 import java.util.regex.Pattern
 
+private fun wire (prefix: String): (Int) -> String = { i -> String.format ("$prefix%02d", i) }
+val xWire = wire ("x")
+val yWire = wire ("y")
+val zWire = wire ("z")
+
 class Model (val wires: Map<String, Wire>, val gates: List<Gate>) {
+    val bits = wires.keys
+        .filter { it.startsWith ("z") }
+        .map { it.substring (1, it.length) }
+        .map { it.toInt () }
+        .max ()
+
+    fun value (prefix: String): Long {
+        var value = 0L
+        for (bit in 0 until bits) {
+            val wire = String.format ("$prefix%02d", bit)
+            if (get (wire).value == true) {
+                value += 1L shl bit
+            }
+        }
+        return value
+    }
+
+    private fun value (prefix: String, value: Long) {
+        for (bit in 0 until bits) {
+            val wire = String.format ("$prefix%02d", bit)
+            val isSet = value and (1L shl bit) != 0L
+            wires[wire]!!.value = isSet
+        }
+
+    }
+
+    var z: Long
+        get () = value ("z")
+        set (value: Long) {
+            value ("z", value)
+        }
+    var x: Long
+        get () = value ("x")
+        set (value: Long) {
+            value ("x", value)
+        }
+    var y: Long
+        get () = value ("y")
+        set (value: Long) {
+            value ("y", value)
+        }
+
     val output: Long
         get () {
             var value = 0L
@@ -48,6 +96,38 @@ class Model (val wires: Map<String, Wire>, val gates: List<Gate>) {
                 throw IllegalStateException ()
             }
             gates.removeAll (remove)
+        }
+    }
+
+    /**
+     * Find the path from the specified input to the specified output.
+     */
+
+    fun path (from: String, to: String): List<Gate> {
+        var wire = wires[from] as Wire
+        return buildList {
+
+        }
+    }
+
+    fun clear () {
+        for (bit in 0 until bits) {
+            set (yWire (bit), false)
+            set (xWire (bit), false)
+        }
+    }
+    fun set (wire: String, value: Boolean) {
+        wires[wire]!!.value = value
+    }
+    fun get (wire: String) = wires[wire] as Wire
+
+    fun findGate (outputWire: String): Gate {
+        val wire = wires [outputWire] as Wire
+        val gates = gates.filter { wire in it.outputs }
+        return if (gates.size == 1) {
+            gates[0]
+        } else {
+            halt ()
         }
     }
 

@@ -13,3 +13,7 @@ fun Int.forEach (func: (Int) -> Unit) {
     }
     return
 }
+
+fun halt (): Nothing {
+    throw IllegalStateException()
+}
