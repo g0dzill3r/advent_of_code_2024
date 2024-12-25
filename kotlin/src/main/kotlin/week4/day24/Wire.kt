@@ -28,7 +28,7 @@ class Wire (
             }
         }
 
-    override fun toString() = "$name($value)"
+    override fun toString() = "$name($value)->$outputs"
     operator fun invoke (value: Boolean) {
         this.value = value
         return

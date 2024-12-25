@@ -19,7 +19,6 @@ class Lock (size: Int, pins: List<Int>): Thing (size, pins)
 class Key (size: Int, pins: List<Int>): Thing (size, pins)
 
 class Model (val locks: List<Lock>, val keys: List<Key>) {
-
     companion object {
         fun parse (input: String): Model {
             val iter = input.split ("\n\n")
@@ -48,7 +47,5 @@ class Model (val locks: List<Lock>, val keys: List<Key>) {
         }
     }
 }
-
-
 
 // EOF
